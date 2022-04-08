@@ -6,7 +6,10 @@ import com.upskill.movieland.entity.Movie;
 import com.upskill.movieland.service.MovieService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +34,7 @@ public class MovieController {
     }
 
     @GetMapping("/random")
-    public List<MovieDto> getRandomMovies(@RequestParam int quantity) {
+    public List<MovieDto> getRandomMovies(@Value("${movie.random.quantity}") int quantity) {
         List<Movie> movies = movieService.getRandomMovies(quantity);
         log.debug("getAllMovies");
         return mapToDto(movies);

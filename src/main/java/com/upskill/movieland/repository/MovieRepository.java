@@ -10,14 +10,14 @@ import java.util.List;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-    @Query("SELECT m FROM movie m\n" +
-            "ORDER BY RAND()\n" +
-            "LIMIT amount")
+    @Query(value ="SELECT m FROM movie m \n" +
+            "ORDER BY RAND() \n" +
+            "LIMIT :amount", nativeQuery = true)
     List<Movie> getRandomMovies(int amount);
 
-    @Query("select m from movie m " +
-            "left join genres" +
-            "on m.genre_id = genre.id" +
-            "where genre.id = genreId")
+    @Query(value = "select m from movie m " +
+            "left join genres " +
+            "on m.genre_id = genre.id " +
+            "where genre.id = :genreId", nativeQuery = true)
     List<Movie> getByGenreId(Integer genreId);
 }
