@@ -4,12 +4,11 @@ import com.upskill.movieland.Mapper.MovieMapper;
 import com.upskill.movieland.dto.MovieDto;
 import com.upskill.movieland.entity.Movie;
 import com.upskill.movieland.service.MovieService;
+import com.upskill.movieland.sort.SortingProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,15 +26,20 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<MovieDto> getAllMovies() {
-        List<Movie> movies = movieService.getAll();
+    public List<MovieDto> getAllMovies(@RequestParam(required = false) String sortField,
+                                       @RequestParam(required = false) String sortDirection) {
+        SortingProperties sortingProperties = new SortingProperties(sortField, sortDirection);
+        List<Movie> movies = movieService.getAll(sortingProperties);
         log.debug("getAllMovies");
         return mapToDto(movies);
     }
 
     @GetMapping("/random")
-    public List<MovieDto> getRandomMovies(@Value("${movie.random.quantity}") int quantity) {
-        List<Movie> movies = movieService.getRandomMovies(quantity);
+    public List<MovieDto> getRandomMovies(@Value("${movie.random.quantity}") int quantity,
+                                          @RequestParam(required = false) String sortField,
+                                          @RequestParam(required = false) String sortDirection) {
+        SortingProperties sortingProperties = new SortingProperties(sortField, sortDirection);
+        List<Movie> movies = movieService.getRandomMovies(quantity, sortingProperties);
         log.debug("getAllMovies");
         return mapToDto(movies);
     }
@@ -51,4 +55,6 @@ public class MovieController {
         MovieMapper movieMapper = new MovieMapper();
         return movieMapper.map(movies);
     }
+
+
 }
